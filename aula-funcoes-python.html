@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funções em Python — Fundamentos da Programação</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252836;
+    --py-yellow: #ffd43b;
+    --py-blue: #4dabf7;
+    --py-green: #69db7c;
+    --py-orange: #ff922b;
+    --py-pink: #f783ac;
+    --py-purple: #b197fc;
+    --text: #e2e8f0;
+    --text-muted: #7a8499;
+    --accent: #ffd43b;
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% -10%, #ffd43b18 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 10% 80%, #4dabf710 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 90% 80%, #69db7c0a 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-block;
+    background: #ffd43b15;
+    border: 1px solid #ffd43b40;
+    color: var(--py-yellow);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  header h1 span { color: var(--py-yellow); }
+
+  header p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 560px;
+    margin: 0 auto 32px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .header-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .header-meta span::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--py-yellow);
+    opacity: 0.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,15,20,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    overflow-x: auto;
+  }
+
+  nav ul {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    padding: 12px 0;
+    min-width: max-content;
+  }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  nav a:hover { background: var(--surface2); color: var(--text); }
+  nav a.active { background: #ffd43b18; color: var(--py-yellow); }
+
+  .nav-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    opacity: 0.5;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 60px 32px 120px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 80px;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .section.visible { opacity: 1; transform: translateY(0); }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--py-yellow);
+    background: #ffd43b15;
+    border: 1px solid #ffd43b30;
+    border-radius: 6px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    margin-top: 6px;
+  }
+
+  .section-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .section-title span { color: var(--py-yellow); }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: #ffd43b30; }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .card-icon {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .card p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    position: relative;
+    background: #0a0c11;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 20px 0;
+    font-size: 0.88rem;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--py-yellow);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .code-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .code-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .code-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .code-dots span:nth-child(1) { background: #ff5f57; }
+  .code-dots span:nth-child(2) { background: #febc2e; }
+  .code-dots span:nth-child(3) { background: #28c840; }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    line-height: 1.7;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: inherit;
+  }
+
+  /* Syntax highlighting */
+  .kw  { color: #ff79c6; } /* keyword */
+  .fn  { color: var(--py-yellow); } /* function name */
+  .str { color: var(--py-green); }  /* string */
+  .num { color: var(--py-orange); } /* number */
+  .cm  { color: #6272a4; font-style: italic; } /* comment */
+  .bi  { color: var(--py-blue); }   /* builtin */
+  .prm { color: var(--py-pink); }   /* param */
+  .ret { color: var(--py-purple); } /* return value */
+  .var { color: #cdd6f4; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    display: flex;
+    gap: 14px;
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+
+  .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .callout.tip    { background: #4dabf710; border: 1px solid #4dabf730; }
+  .callout.warn   { background: #ff922b10; border: 1px solid #ff922b30; }
+  .callout.info   { background: #ffd43b10; border: 1px solid #ffd43b30; }
+  .callout.good   { background: #69db7c10; border: 1px solid #69db7c30; }
+  .callout.bad    { background: #ff6b6b10; border: 1px solid #ff6b6b30; }
+
+  .callout p { line-height: 1.5; color: var(--text); }
+  .callout strong { display: block; margin-bottom: 4px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .callout.tip strong    { color: var(--py-blue); }
+  .callout.warn strong   { color: var(--py-orange); }
+  .callout.info strong   { color: var(--py-yellow); }
+  .callout.good strong   { color: var(--py-green); }
+  .callout.bad strong    { color: #ff6b6b; }
+
+  /* ── ANATOMY ── */
+  .anatomy {
+    background: #0a0c11;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    position: relative;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 2.2;
+    margin: 20px 0;
+  }
+
+  .ann {
+    display: inline-block;
+    position: relative;
+  }
+
+  .ann-label {
+    position: absolute;
+    top: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    white-space: nowrap;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0 28px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── COMPARISON ── */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  @media (max-width: 600px) { .compare { grid-template-columns: 1fr; } }
+
+  .compare-col h4 {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+  }
+
+  .compare-col.bad-col  h4 { background: #ff6b6b15; color: #ff6b6b; border: 1px solid #ff6b6b30; }
+  .compare-col.good-col h4 { background: #69db7c15; color: var(--py-green); border: 1px solid #69db7c30; }
+
+  /* ── SCOPE DIAGRAM ── */
+  .scope-diagram {
+    background: #0a0c11;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin: 20px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+  }
+
+  .scope-global {
+    border: 2px dashed #4dabf750;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    margin-bottom: 0;
+  }
+
+  .scope-local {
+    border: 2px dashed #ffd43b50;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+    position: relative;
+  }
+
+  .scope-tag {
+    position: absolute;
+    top: -11px;
+    left: 12px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 1px 8px;
+    border-radius: 4px;
+  }
+
+  .scope-tag.global { background: #4dabf720; color: var(--py-blue); border: 1px solid #4dabf740; }
+  .scope-tag.local  { background: #ffd43b20; color: var(--py-yellow); border: 1px solid #ffd43b40; }
+
+  .scope-var { margin: 4px 0; }
+  .scope-var .var-name { color: var(--py-pink); }
+  .scope-var .var-val  { color: var(--py-green); }
+  .scope-arrow { color: var(--text-muted); }
+
+  /* ── BEST PRACTICES ── */
+  .bp-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bp-item:last-child { border-bottom: none; }
+
+  .bp-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--py-yellow);
+    opacity: 0.4;
+    min-width: 28px;
+  }
+
+  .bp-content h4 { font-size: 0.95rem; margin-bottom: 4px; }
+  .bp-content p  { font-size: 0.85rem; color: var(--text-muted); }
+
+  /* ── QUIZ ── */
+  .quiz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .quiz-question { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+
+  .quiz-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.88rem;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--surface2);
+    color: var(--text-muted);
+  }
+
+  .quiz-opt:hover { border-color: #ffd43b40; color: var(--text); }
+  .quiz-opt.correct { background: #69db7c15; border-color: #69db7c60; color: var(--py-green); }
+  .quiz-opt.wrong   { background: #ff6b6b10; border-color: #ff6b6b50; color: #ff6b6b; }
+
+  .quiz-feedback {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    display: none;
+  }
+
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: #69db7c10; border: 1px solid #69db7c30; color: var(--py-green); }
+  .quiz-feedback.wrong   { background: #ff6b6b10; border: 1px solid #ff6b6b30; color: #ff6b6b; }
+
+  /* ── SUMMARY TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 20px 0;
+  }
+
+  th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  td:first-child { color: var(--py-yellow); }
+  tr:hover td { background: var(--surface2); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+
+  footer strong { color: var(--py-yellow); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3f55; }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--py-yellow), var(--py-blue));
+    z-index: 999;
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* ── TAG ── */
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin: 2px;
+  }
+
+  .tag.yellow { background: #ffd43b20; color: var(--py-yellow); border: 1px solid #ffd43b40; }
+  .tag.blue   { background: #4dabf720; color: var(--py-blue);   border: 1px solid #4dabf740; }
+  .tag.green  { background: #69db7c20; color: var(--py-green);  border: 1px solid #69db7c40; }
+  .tag.pink   { background: #f783ac20; color: var(--py-pink);   border: 1px solid #f783ac40; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="header-bg"></div>
+  <div class="badge">Fundamentos da Programação · ADS</div>
+  <h1>Funções em <span>Python</span></h1>
+  <p>Aprenda a organizar, reutilizar e estruturar seu código com funções de forma profissional.</p>
+  <div class="header-meta">
+    <span>6 tópicos</span>
+    <span>Análise e Desenvolvimento de Sistemas</span>
+    <span>Python 3.x</span>
+  </div>
+</header>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav>
+  <ul>
+    <li><a href="#s1" class="active"><span class="nav-num">01</span> Por que usar funções</a></li>
+    <li><a href="#s2"><span class="nav-num">02</span> Estrutura</a></li>
+    <li><a href="#s3"><span class="nav-num">03</span> Parâmetros e Retorno</a></li>
+    <li><a href="#s4"><span class="nav-num">04</span> Reutilização</a></li>
+    <li><a href="#s5"><span class="nav-num">05</span> Escopo</a></li>
+    <li><a href="#s6"><span class="nav-num">06</span> Boas Práticas</a></li>
+    <li><a href="#quiz"><span class="nav-num">✓</span> Quiz</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main>
+
+<!-- ──────── 01: Por que usar funções ──────── -->
+<section id="s1" class="section">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Por que usar <span>funções</span>?</h2>
+  </div>
+
+  <p style="color:var(--text-muted); margin-bottom:24px; font-size:0.95rem;">
+    Imagine ter que escrever o mesmo trecho de código toda vez que precisar calcular o IMC de um paciente em um sistema hospitalar. Funções resolvem exatamente esse problema.
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="card-icon">♻️</span>
+      <h3>Reutilização</h3>
+      <p>Escreva uma vez, use em qualquer lugar. Evita duplicação e facilita manutenção.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🧩</span>
+      <h3>Modularização</h3>
+      <p>Divide o programa em partes menores e independentes, mais fáceis de entender.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🐛</span>
+      <h3>Facilidade de testes</h3>
+      <p>Você pode testar cada função isoladamente, encontrando bugs com mais facilidade.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📖</span>
+      <h3>Legibilidade</h3>
+      <p>Um nome de função bem escolhido comunica a intenção do código imediatamente.</p>
+    </div>
+  </div>
+
+  <div class="divider">exemplo motivador</div>
+
+  <div class="compare">
+    <div class="compare-col bad-col">
+      <h4>❌ Sem funções</h4>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><code><cm># Calcular área para 3 retângulos</cm>
+<var>base1</var>, <var>alt1</var> = <num>5</num>, <num>3</num>
+<var>area1</var> = <var>base1</var> * <var>alt1</var>
+<bi>print</bi>(<var>area1</var>)
+
+<var>base2</var>, <var>alt2</var> = <num>8</num>, <num>4</num>
+<var>area2</var> = <var>base2</var> * <var>alt2</var>
+<bi>print</bi>(<var>area2</var>)
+
+<var>base3</var>, <var>alt3</var> = <num>6</num>, <num>7</num>
+<var>area3</var> = <var>base3</var> * <var>alt3</var>
+<bi>print</bi>(<var>area3</var>)</code></pre>
+      </div>
+    </div>
+    <div class="compare-col good-col">
+      <h4>✅ Com funções</h4>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><code><kw>def</kw> <fn>area_retangulo</fn>(<prm>base</prm>, <prm>altura</prm>):
+    <kw>return</kw> <prm>base</prm> * <prm>altura</prm>
+
+<bi>print</bi>(<fn>area_retangulo</fn>(<num>5</num>, <num>3</num>))
+<bi>print</bi>(<fn>area_retangulo</fn>(<num>8</num>, <num>4</num>))
+<bi>print</bi>(<fn>area_retangulo</fn>(<num>6</num>, <num>7</num>))</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <p><strong>Princípio DRY</strong>Don't Repeat Yourself — não se repita. Funções são a principal ferramenta para seguir este princípio fundamental da programação.</p>
+  </div>
+</section>
+
+<!-- ──────── 02: Estrutura ──────── -->
+<section id="s2" class="section">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Estrutura de uma <span>função</span></h2>
+  </div>
+
+  <p style="color:var(--text-muted); margin-bottom:24px; font-size:0.95rem;">
+    Em Python, toda função segue a mesma anatomia. Vamos dissecar cada parte:
+  </p>
+
+  <div class="anatomy">
+    <div style="margin-bottom: 32px;">
+      <span style="color:#6272a4; font-family:'Syne',sans-serif; font-size:0.75rem; display:block; margin-bottom:16px;">ANATOMIA COMPLETA</span>
+      <div style="line-height: 2.6;">
+
+        <span class="kw">def</span>&nbsp;<span class="fn">calcular_media</span>(<span class="prm">nota1</span>,&nbsp;<span class="prm">nota2</span>,&nbsp;<span class="prm">nota3</span>):<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"Calcula a média de três notas."</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="var">media</span>&nbsp;=&nbsp;(<span class="prm">nota1</span>&nbsp;+&nbsp;<span class="prm">nota2</span>&nbsp;+&nbsp;<span class="prm">nota3</span>)&nbsp;/&nbsp;<span class="num">3</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span>&nbsp;<span class="var">media</span>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:8px;">
+      <div style="background:#ff79c615; border:1px solid #ff79c630; border-radius:8px; padding:10px 12px;">
+        <div style="font-family:'Syne',sans-serif; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:#ff79c6; margin-bottom:4px;">def</div>
+        <div style="font-size:0.8rem; color:var(--text-muted);">Palavra-chave que declara a função</div>
+      </div>
+      <div style="background:#ffd43b15; border:1px solid #ffd43b30; border-radius:8px; padding:10px 12px;">
+        <div style="font-family:'Syne',sans-serif; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--py-yellow); margin-bottom:4px;">nome</div>
+        <div style="font-size:0.8rem; color:var(--text-muted);">Identificador — use snake_case</div>
+      </div>
+      <div style="background:#f783ac15; border:1px solid #f783ac30; border-radius:8px; padding:10px 12px;">
+        <div style="font-family:'Syne',sans-serif; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--py-pink); margin-bottom:4px;">parâmetros</div>
+        <div style="font-size:0.8rem; color:var(--text-muted);">Dados de entrada (opcionais)</div>
+      </div>
+      <div style="background:#69db7c15; border:1px solid #69db7c30; border-radius:8px; padding:10px 12px;">
+        <div style="font-family:'Syne',sans-serif; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--py-green); margin-bottom:4px;">docstring</div>
+        <div style="font-size:0.8rem; color:var(--text-muted);">Documentação da função (opcional, mas recomendado)</div>
+      </div>
+      <div style="background:#4dabf715; border:1px solid #4dabf730; border-radius:8px; padding:10px 12px;">
+        <div style="font-family:'Syne',sans-serif; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--py-blue); margin-bottom:4px;">corpo</div>
+        <div style="font-size:0.8rem; color:var(--text-muted);">Bloco indentado com a lógica</div>
+      </div>
+      <div style="background:#b197fc15; border:1px solid #b197fc30; border-radius:8px; padding:10px 12px;">
+        <div style="font-family:'Syne',sans-serif; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--py-purple); margin-bottom:4px;">return</div>
+        <div style="font-size:0.8rem; color:var(--text-muted);">Valor retornado (opcional)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider">variações</div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3 style="margin-bottom:12px; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted);">Função sem parâmetros e sem retorno</h3>
+      <div class="code-block" style="margin:0;">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><code><kw>def</kw> <fn>saudar</fn>():
+    <bi>print</bi>(<str>"Olá, turma!"</str>)
+
+<fn>saudar</fn>()  <cm># Olá, turma!</cm></code></pre>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:12px; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted);">Função com parâmetro e retorno</h3>
+      <div class="code-block" style="margin:0;">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><code><kw>def</kw> <fn>dobrar</fn>(<prm>numero</prm>):
+    <kw>return</kw> <prm>numero</prm> * <num>2</num>
+
+<var>resultado</var> = <fn>dobrar</fn>(<num>5</num>)
+<bi>print</bi>(<var>resultado</var>)  <cm># 10</cm></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <p><strong>Atenção: Indentação</strong>Python usa indentação (4 espaços) para definir o corpo da função. Esquecer isso é um dos erros mais comuns dos iniciantes!</p>
+  </div>
+</section>
+
+<!-- ──────── 03: Parâmetros e Retorno ──────── -->
+<section id="s3" class="section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Parâmetros e <span>Retorno</span></h2>
+  </div>
+
+  <!-- Tipos de parâmetros -->
+  <h3 style="font-size:1.1rem; margin-bottom:16px; color:var(--py-blue);">Tipos de Parâmetros</h3>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-lang">Python</span>
+      <span class="code-label">parâmetros posicionais</span>
+    </div>
+    <pre><code><cm># Parâmetros posicionais — ordem importa!</cm>
+<kw>def</kw> <fn>subtrair</fn>(<prm>a</prm>, <prm>b</prm>):
+    <kw>return</kw> <prm>a</prm> - <prm>b</prm>
+
+<bi>print</bi>(<fn>subtrair</fn>(<num>10</num>, <num>3</num>))   <cm># 7</cm>
+<bi>print</bi>(<fn>subtrair</fn>(<num>3</num>, <num>10</num>))   <cm># -7  ← a ordem mudou o resultado!</cm></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-lang">Python</span>
+      <span class="code-label">parâmetros com valor padrão (default)</span>
+    </div>
+    <pre><code><cm># Valor padrão: usado quando o argumento não é informado</cm>
+<kw>def</kw> <fn>saudar</fn>(<prm>nome</prm>, <prm>saudacao</prm>=<str>"Olá"</str>):
+    <bi>print</bi>(<str>f"</str><var>{</var><prm>saudacao</prm><var>}</var><str>, </str><var>{</var><prm>nome</prm><var>}</var><str>!"</str>)
+
+<fn>saudar</fn>(<str>"Ana"</str>)                    <cm># Olá, Ana!</cm>
+<fn>saudar</fn>(<str>"Carlos"</str>, <str>"Boa tarde"</str>)  <cm># Boa tarde, Carlos!</cm></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-lang">Python</span>
+      <span class="code-label">parâmetros nomeados (keyword arguments)</span>
+    </div>
+    <pre><code><cm># Passando argumentos pelo nome — ordem não importa!</cm>
+<kw>def</kw> <fn>criar_usuario</fn>(<prm>nome</prm>, <prm>email</prm>, <prm>idade</prm>):
+    <bi>print</bi>(<str>f"Usuário: {<prm>nome</prm>}, {<prm>email</prm>}, {<prm>idade</prm>} anos"</str>)
+
+<fn>criar_usuario</fn>(<prm>email</prm>=<str>"ana@ads.com"</str>, <prm>nome</prm>=<str>"Ana"</str>, <prm>idade</prm>=<num>22</num>)</code></pre>
+  </div>
+
+  <div class="divider">o return</div>
+
+  <h3 style="font-size:1.1rem; margin-bottom:16px; color:var(--py-purple);">Retorno de Valores</h3>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-lang">Python</span>
+      <span class="code-label">retorno múltiplo</span>
+    </div>
+    <pre><code><cm># Python permite retornar múltiplos valores!</cm>
+<kw>def</kw> <fn>dividir</fn>(<prm>dividendo</prm>, <prm>divisor</prm>):
+    <var>quociente</var>  = <prm>dividendo</prm> // <prm>divisor</prm>
+    <var>resto</var>      = <prm>dividendo</prm>  % <prm>divisor</prm>
+    <kw>return</kw> <var>quociente</var>, <var>resto</var>  <cm># retorna uma tupla</cm>
+
+<var>q</var>, <var>r</var> = <fn>dividir</fn>(<num>17</num>, <num>5</num>)
+<bi>print</bi>(<str>f"Quociente: {<var>q</var>}, Resto: {<var>r</var>}"</str>)  <cm># Quociente: 3, Resto: 2</cm></code></pre>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">🔵</span>
+    <p><strong>Dica</strong>Uma função sem <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace;">return</code> retorna <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace;">None</code> implicitamente. Isso é diferente de um erro — é comportamento esperado para funções que só realizam ações (como imprimir).</p>
+  </div>
+
+  <!-- Tabela resumo -->
+  <div class="divider">resumo</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Tipo de parâmetro</th>
+        <th>Sintaxe</th>
+        <th>Exemplo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Posicional</td>
+        <td style="color:var(--py-pink);">def f(a, b)</td>
+        <td style="color:var(--text-muted);">f(1, 2)</td>
+      </tr>
+      <tr>
+        <td>Valor padrão</td>
+        <td style="color:var(--py-pink);">def f(a, b=10)</td>
+        <td style="color:var(--text-muted);">f(1) ou f(1, 5)</td>
+      </tr>
+      <tr>
+        <td>Nomeado</td>
+        <td style="color:var(--py-pink);">def f(a, b)</td>
+        <td style="color:var(--text-muted);">f(b=2, a=1)</td>
+      </tr>
+      <tr>
+        <td>Arbitrário (*args)</td>
+        <td style="color:var(--py-pink);">def f(*args)</td>
+        <td style="color:var(--text-muted);">f(1, 2, 3, 4)</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ──────── 04: Reutilização ──────── -->
+<section id="s4" class="section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Reutilização de <span>Código</span></h2>
+  </div>
+
+  <p style="color:var(--text-muted); margin-bottom:24px; font-size:0.95rem;">
+    Funções bem escritas são como peças de LEGO: encaixam em qualquer contexto e podem ser combinadas para construir sistemas complexos.
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-lang">Python</span>
+      <span class="code-label">sistema de notas — composição de funções</span>
+    </div>
+    <pre><code><cm># Funções pequenas e reutilizáveis</cm>
+<kw>def</kw> <fn>calcular_media</fn>(<prm>notas</prm>):
+    <kw>return</kw> <bi>sum</bi>(<prm>notas</prm>) / <bi>len</bi>(<prm>notas</prm>)
+
+<kw>def</kw> <fn>situacao</fn>(<prm>media</prm>):
+    <kw>if</kw> <prm>media</prm> >= <num>7.0</num>:
+        <kw>return</kw> <str>"Aprovado ✅"</str>
+    <kw>elif</kw> <prm>media</prm> >= <num>5.0</num>:
+        <kw>return</kw> <str>"Recuperação ⚠️"</str>
+    <kw>else</kw>:
+        <kw>return</kw> <str>"Reprovado ❌"</str>
+
+<kw>def</kw> <fn>relatorio_aluno</fn>(<prm>nome</prm>, <prm>notas</prm>):
+    <cm># Esta função REUTILIZA as outras!</cm>
+    <var>media</var>  = <fn>calcular_media</fn>(<prm>notas</prm>)
+    <var>status</var> = <fn>situacao</fn>(<var>media</var>)
+    <bi>print</bi>(<str>f"Aluno: {<prm>nome</prm>} | Média: {<var>media</var>:.1f} | {<var>status</var>}"</str>)
+
+<cm># Reutilizando para vários alunos</cm>
+<fn>relatorio_aluno</fn>(<str>"Ana"</str>,    [<num>8.0</num>, <num>7.5</num>, <num>9.0</num>])
+<fn>relatorio_aluno</fn>(<str>"Bruno"</str>,  [<num>5.0</num>, <num>4.5</num>, <num>6.0</num>])
+<fn>relatorio_aluno</fn>(<str>"Carla"</str>,  [<num>3.0</num>, <num>4.0</num>, <num>2.5</num>])</code></pre>
+  </div>
+
+  <div class="callout good">
+    <span class="callout-icon">✅</span>
+    <p><strong>Composição de funções</strong>Funções podem chamar outras funções. Isso permite construir sistemas complexos a partir de peças simples — cada uma faz apenas uma coisa, mas juntas resolvem problemas grandes.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-lang">Python</span>
+      <span class="code-label">exercício: calculadora simples</span>
+    </div>
+    <pre><code><kw>def</kw> <fn>somar</fn>(<prm>a</prm>, <prm>b</prm>):       <kw>return</kw> <prm>a</prm> + <prm>b</prm>
+<kw>def</kw> <fn>subtrair</fn>(<prm>a</prm>, <prm>b</prm>):   <kw>return</kw> <prm>a</prm> - <prm>b</prm>
+<kw>def</kw> <fn>multiplicar</fn>(<prm>a</prm>, <prm>b</prm>): <kw>return</kw> <prm>a</prm> * <prm>b</prm>
+<kw>def</kw> <fn>dividir</fn>(<prm>a</prm>, <prm>b</prm>):
+    <kw>if</kw> <prm>b</prm> == <num>0</num>:
+        <kw>return</kw> <str>"Erro: divisão por zero"</str>
+    <kw>return</kw> <prm>a</prm> / <prm>b</prm>
+
+<kw>def</kw> <fn>calcular</fn>(<prm>op</prm>, <prm>a</prm>, <prm>b</prm>):
+    <var>operacoes</var> = {
+        <str>'+'</str>: <fn>somar</fn>,
+        <str>'-'</str>: <fn>subtrair</fn>,
+        <str>'*'</str>: <fn>multiplicar</fn>,
+        <str>'/'</str>: <fn>dividir</fn>
+    }
+    <var>func</var> = <var>operacoes</var>.<bi>get</bi>(<prm>op</prm>)
+    <kw>if</kw> <var>func</var>:
+        <kw>return</kw> <var>func</var>(<prm>a</prm>, <prm>b</prm>)
+    <kw>return</kw> <str>"Operação inválida"</str>
+
+<bi>print</bi>(<fn>calcular</fn>(<str>'+'</str>, <num>10</num>, <num>5</num>))   <cm># 15</cm>
+<bi>print</bi>(<fn>calcular</fn>(<str>'/'</str>, <num>10</num>, <num>0</num>))   <cm># Erro: divisão por zero</cm></code></pre>
+  </div>
+</section>
+
+<!-- ──────── 05: Escopo ──────── -->
+<section id="s5" class="section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Escopo de <span>Variáveis</span></h2>
+  </div>
+
+  <p style="color:var(--text-muted); margin-bottom:24px; font-size:0.95rem;">
+    O <strong>escopo</strong> define onde uma variável pode ser acessada. Em Python existem dois principais: <span class="tag blue">global</span> e <span class="tag yellow">local</span>.
+  </p>
+
+  <!-- Diagrama de escopo -->
+  <div class="scope-diagram">
+    <div class="scope-global">
+      <span class="scope-tag global">escopo global</span>
+      <div class="scope-var">
+        <span class="var-name">x</span> <span class="scope-arrow">=</span> <span class="var-val">10</span> &nbsp;<span style="color:var(--text-muted); font-size:0.75rem;"># visível em todo o programa</span>
+      </div>
+      <div class="scope-local">
+        <span class="scope-tag local">escopo local — função minha_funcao()</span>
+        <div class="scope-var">
+          <span class="var-name">y</span> <span class="scope-arrow">=</span> <span class="var-val">20</span> &nbsp;<span style="color:var(--text-muted); font-size:0.75rem;"># só existe dentro desta função</span>
+        </div>
+        <div class="scope-var" style="color:var(--py-blue); font-size:0.78rem;">
+          ✓ pode ler <span class="var-name">x</span> (global)
+        </div>
+        <div class="scope-var" style="color:var(--py-green); font-size:0.78rem;">
+          ✓ pode ler e escrever <span class="var-name">y</span> (local)
+        </div>
+      </div>
+      <div class="scope-var" style="color:#ff6b6b; font-size:0.78rem; margin-top:8px;">
+        ✗ não pode ler <span style="color:var(--py-pink);">y</span> aqui fora (local da função)
+      </div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-lang">Python</span>
+      <span class="code-label">escopo local vs global</span>
+    </div>
+    <pre><code><var>contador</var> = <num>0</num>  <cm># variável GLOBAL</cm>
+
+<kw>def</kw> <fn>incrementar</fn>():
+    <var>local_var</var> = <num>100</num>  <cm># variável LOCAL</cm>
+    <bi>print</bi>(<str>f"Dentro da função: {<var>contador</var>}"</str>)   <cm># lê global ✓</cm>
+    <bi>print</bi>(<str>f"Var local: {<var>local_var</var>}"</str>)
+
+<fn>incrementar</fn>()
+<bi>print</bi>(<str>f"Fora da função: {<var>contador</var>}"</str>)    <cm># 0</cm>
+<cm># print(local_var)  ← NameError! local_var não existe aqui</cm></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-lang">Python</span>
+      <span class="code-label">usando a palavra-chave global</span>
+    </div>
+    <pre><code><var>total</var> = <num>0</num>
+
+<kw>def</kw> <fn>adicionar</fn>(<prm>valor</prm>):
+    <kw>global</kw> <var>total</var>  <cm># "aviso": vou modificar a variável global</cm>
+    <var>total</var> += <prm>valor</prm>
+
+<fn>adicionar</fn>(<num>5</num>)
+<fn>adicionar</fn>(<num>3</num>)
+<bi>print</bi>(<var>total</var>)  <cm># 8</cm></code></pre>
+  </div>
+
+  <div class="callout bad">
+    <span class="callout-icon">🚫</span>
+    <p><strong>Evite variáveis globais</strong>O uso de <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace;">global</code> torna o código difícil de rastrear e testar. Prefira sempre passar valores como <strong>parâmetros</strong> e receber via <strong>return</strong>.</p>
+  </div>
+
+  <div class="compare" style="margin-top:20px;">
+    <div class="compare-col bad-col">
+      <h4>❌ Evitar</h4>
+      <div class="code-block" style="margin:0;">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><code><var>desconto</var> = <num>0.1</num>
+
+<kw>def</kw> <fn>calcular_preco</fn>(<prm>preco</prm>):
+    <kw>global</kw> <var>desconto</var>
+    <kw>return</kw> <prm>preco</prm> * (<num>1</num> - <var>desconto</var>)</code></pre>
+      </div>
+    </div>
+    <div class="compare-col good-col">
+      <h4>✅ Preferir</h4>
+      <div class="code-block" style="margin:0;">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><code><kw>def</kw> <fn>calcular_preco</fn>(<prm>preco</prm>, <prm>desconto</prm>):
+    <kw>return</kw> <prm>preco</prm> * (<num>1</num> - <prm>desconto</prm>)</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────── 06: Boas Práticas ──────── -->
+<section id="s6" class="section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Boas Práticas em <span>Funções</span></h2>
+  </div>
+
+  <div class="card" style="margin-bottom:28px;">
+    <div class="bp-item">
+      <div class="bp-num">01</div>
+      <div class="bp-content">
+        <h4>Uma função, uma responsabilidade</h4>
+        <p>Cada função deve fazer uma coisa bem feita. Se o nome tiver "e" (ex: "calcular_e_imprimir"), provavelmente deve ser dividida.</p>
+      </div>
+    </div>
+    <div class="bp-item">
+      <div class="bp-num">02</div>
+      <div class="bp-content">
+        <h4>Nomes descritivos em snake_case</h4>
+        <p>Use verbos que descrevem a ação: <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace; color:var(--py-yellow);">calcular_media()</code>, <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace; color:var(--py-yellow);">verificar_login()</code>. Evite <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace; color:#ff6b6b;">f1()</code> ou <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace; color:#ff6b6b;">fazCoisa()</code>.</p>
+      </div>
+    </div>
+    <div class="bp-item">
+      <div class="bp-num">03</div>
+      <div class="bp-content">
+        <h4>Docstrings em funções públicas</h4>
+        <p>Documente o que a função faz, seus parâmetros e o que retorna. Use <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace; color:var(--py-green);">"""texto"""</code> logo após o <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace; color:#ff79c6;">def</code>.</p>
+      </div>
+    </div>
+    <div class="bp-item">
+      <div class="bp-num">04</div>
+      <div class="bp-content">
+        <h4>Limite o número de parâmetros</h4>
+        <p>Mais de 4-5 parâmetros é sinal de que a função está fazendo coisas demais. Considere agrupar dados em dicionários ou criar uma classe.</p>
+      </div>
+    </div>
+    <div class="bp-item">
+      <div class="bp-num">05</div>
+      <div class="bp-content">
+        <h4>Evite efeitos colaterais desnecessários</h4>
+        <p>Prefira funções que recebem dados, processam e retornam um resultado — sem modificar variáveis externas ou estados globais.</p>
+      </div>
+    </div>
+    <div class="bp-item">
+      <div class="bp-num">06</div>
+      <div class="bp-content">
+        <h4>Mantenha funções curtas e focadas</h4>
+        <p>Uma boa função cabe em uma tela (~20 linhas). Se precisar de scroll para lê-la, considere refatorar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-lang">Python</span>
+      <span class="code-label">exemplo de função bem escrita</span>
+    </div>
+    <pre><code><kw>def</kw> <fn>calcular_imc</fn>(<prm>peso_kg</prm>: <bi>float</bi>, <prm>altura_m</prm>: <bi>float</bi>) -> <bi>float</bi>:
+    <str>"""
+    Calcula o Índice de Massa Corporal (IMC).
+
+    Args:
+        peso_kg:  Peso em quilogramas.
+        altura_m: Altura em metros.
+
+    Returns:
+        float: O valor do IMC calculado.
+
+    Raises:
+        ValueError: Se altura ou peso forem negativos ou zero.
+    """</str>
+    <kw>if</kw> <prm>peso_kg</prm> <= <num>0</num> <kw>or</kw> <prm>altura_m</prm> <= <num>0</num>:
+        <kw>raise</kw> <bi>ValueError</bi>(<str>"Peso e altura devem ser positivos"</str>)
+    <kw>return</kw> <prm>peso_kg</prm> / (<prm>altura_m</prm> ** <num>2</num>)
+
+<cm># Uso claro e legível</cm>
+<var>imc</var> = <fn>calcular_imc</fn>(<prm>peso_kg</prm>=<num>70</num>, <prm>altura_m</prm>=<num>1.75</num>)
+<bi>print</bi>(<str>f"IMC: {<var>imc</var>:.1f}"</str>)  <cm># IMC: 22.9</cm></code></pre>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">🔵</span>
+    <p><strong>Type Hints (Python 3.5+)</strong>As anotações de tipo <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace;">: float</code> e <code style="background:#ffffff10; padding:1px 5px; border-radius:4px; font-family:'JetBrains Mono',monospace;">-> float</code> não são obrigatórias, mas tornam o código muito mais legível e ajudam ferramentas como IDEs e linters a detectar erros.</p>
+  </div>
+</section>
+
+<!-- ──────── QUIZ ──────── -->
+<section id="quiz" class="section">
+  <div class="section-header">
+    <span class="section-num">✓</span>
+    <h2 class="section-title">Quiz de <span>Fixação</span></h2>
+  </div>
+
+  <p style="color:var(--text-muted); margin-bottom:28px; font-size:0.9rem;">Clique na resposta que você acha correta.</p>
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-question">1. O que a seguinte função retorna? <br><code style="font-family:'JetBrains Mono',monospace; color:var(--py-yellow); font-size:0.88rem;">def f(): print("oi")</code></div>
+    <div class="quiz-options" id="q1">
+      <div class="quiz-opt" onclick="responder('q1', this, false)">"oi"</div>
+      <div class="quiz-opt" onclick="responder('q1', this, true)">None</div>
+      <div class="quiz-opt" onclick="responder('q1', this, false)">0</div>
+      <div class="quiz-opt" onclick="responder('q1', this, false)">Gera um erro</div>
+    </div>
+    <div class="quiz-feedback" id="q1-feedback"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-question">2. Qual é a saída do código abaixo?<br><code style="font-family:'JetBrains Mono',monospace; color:var(--py-yellow); font-size:0.88rem;">def somar(a, b=5): return a + b<br>print(somar(3))</code></div>
+    <div class="quiz-options" id="q2">
+      <div class="quiz-opt" onclick="responder('q2', this, false)">Erro: faltou argumento</div>
+      <div class="quiz-opt" onclick="responder('q2', this, false)">3</div>
+      <div class="quiz-opt" onclick="responder('q2', this, true)">8</div>
+      <div class="quiz-opt" onclick="responder('q2', this, false)">5</div>
+    </div>
+    <div class="quiz-feedback" id="q2-feedback"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-question">3. Uma variável criada dentro de uma função pode ser acessada fora dela?</div>
+    <div class="quiz-options" id="q3">
+      <div class="quiz-opt" onclick="responder('q3', this, false)">Sim, sempre</div>
+      <div class="quiz-opt" onclick="responder('q3', this, true)">Não, ela é local</div>
+      <div class="quiz-opt" onclick="responder('q3', this, false)">Sim, se for do tipo int ou str</div>
+      <div class="quiz-opt" onclick="responder('q3', this, false)">Depende do nome da variável</div>
+    </div>
+    <div class="quiz-feedback" id="q3-feedback"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-question">4. Qual das alternativas segue as boas práticas de nomenclatura Python?</div>
+    <div class="quiz-options" id="q4">
+      <div class="quiz-opt" onclick="responder('q4', this, false)">calculaIMC()</div>
+      <div class="quiz-opt" onclick="responder('q4', this, false)">CalcularIMC()</div>
+      <div class="quiz-opt" onclick="responder('q4', this, true)">calcular_imc()</div>
+      <div class="quiz-opt" onclick="responder('q4', this, false)">CalcIMC()</div>
+    </div>
+    <div class="quiz-feedback" id="q4-feedback"></div>
+  </div>
+</section>
+
+<!-- ──────── RESUMO FINAL ──────── -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">📌</span>
+    <h2 class="section-title">Resumo <span>Final</span></h2>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="tag yellow">def</span>
+      <h3 style="margin-top:10px;">Declaração</h3>
+      <p>Use <code style="font-family:'JetBrains Mono',monospace; color:#ff79c6;">def nome(params):</code> para criar uma função.</p>
+    </div>
+    <div class="card">
+      <span class="tag pink">parâmetros</span>
+      <h3 style="margin-top:10px;">Entrada</h3>
+      <p>Posicionais, com default ou nomeados. Entrada de dados para a função.</p>
+    </div>
+    <div class="card">
+      <span class="tag blue">return</span>
+      <h3 style="margin-top:10px;">Saída</h3>
+      <p>Devolve um valor. Pode retornar múltiplos valores como tupla.</p>
+    </div>
+    <div class="card">
+      <span class="tag green">escopo</span>
+      <h3 style="margin-top:10px;">Visibilidade</h3>
+      <p>Local = dentro da função. Global = todo o programa. Prefira local.</p>
+    </div>
+  </div>
+
+  <div class="callout info" style="margin-top:28px;">
+    <span class="callout-icon">🎯</span>
+    <p><strong>Para a próxima aula</strong>Pratique criando funções para um mini-sistema: cadastro de produtos com preço, estoque e cálculo de total. Use funções separadas para cada operação e aplique as boas práticas aprendidas hoje!</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <p>Fundamentos da Programação · Análise e Desenvolvimento de Sistemas</p>
+  <p style="margin-top:8px; color:#3a3f55;">Material didático — <strong>Python 3.x</strong></p>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('progress-bar').style.width = scrolled + '%';
+  });
+
+  // Section reveal on scroll
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.08 });
+  sections.forEach(s => observer.observe(s));
+
+  // Nav active state
+  const navLinks = document.querySelectorAll('nav a');
+  const sectionEls = document.querySelectorAll('section[id]');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sectionEls.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+    });
+  });
+
+  // Quiz
+  const feedbacks = {
+    q1: { correct: "Correto! Funções sem return retornam None implicitamente.", wrong: "Não! print() exibe na tela mas a função retorna None." },
+    q2: { correct: "Correto! b tem valor padrão 5, então somar(3) = 3 + 5 = 8.", wrong: "Não! b=5 é o valor padrão quando b não é informado. 3 + 5 = 8." },
+    q3: { correct: "Correto! Variáveis locais existem apenas dentro da função.", wrong: "Não! Variáveis locais são destruídas quando a função termina." },
+    q4: { correct: "Correto! Python usa snake_case para funções (PEP 8).", wrong: "Não! Python usa snake_case: palavras minúsculas separadas por underscore." }
+  };
+
+  function responder(qid, el, correct) {
+    const container = document.getElementById(qid);
+    if (container.dataset.answered) return;
+    container.dataset.answered = '1';
+
+    container.querySelectorAll('.quiz-opt').forEach(o => o.style.pointerEvents = 'none');
+    el.classList.add(correct ? 'correct' : 'wrong');
+
+    if (!correct) {
+      container.querySelectorAll('.quiz-opt').forEach(opt => {
+        if (opt.getAttribute('onclick').includes('true')) opt.classList.add('correct');
+      });
+    }
+
+    const fb = document.getElementById(qid + '-feedback');
+    fb.textContent = correct ? '✅ ' + feedbacks[qid].correct : '❌ ' + feedbacks[qid].wrong;
+    fb.className = 'quiz-feedback show ' + (correct ? 'correct' : 'wrong');
+  }
+</script>
+</body>
+</html>
